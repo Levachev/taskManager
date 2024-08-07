@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,5 +19,17 @@ public class UserService {
 
     public UserDetailsService userDetailsService(){
         return this::findByEmail;
+    }
+
+    public User createUser(User user) {
+        if (userRepo.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Пользователь с таким email уже существует");
+        }
+
+        return save(user);
+    }
+
+    public User save(User user) {
+        return userRepo.save(user);
     }
 }
