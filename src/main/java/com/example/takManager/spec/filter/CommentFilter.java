@@ -1,6 +1,6 @@
-package com.example.takManager.dto;
+package com.example.takManager.spec.filter;
 
-public record CommentDto(
+public record CommentFilter(
         Long taskId,
         String comment,
         Long commentatorId

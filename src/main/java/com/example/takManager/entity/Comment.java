@@ -23,7 +23,7 @@ public class Comment {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "task_id", nullable = false)
+    @JoinColumn(name = "commentator_id", nullable = false)
     @JsonIgnore
     private User commentator;
 }
