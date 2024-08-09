@@ -9,8 +9,8 @@ public class TaskMapper {
             return null;
         }
 
-        return new TaskDto(task.getId(), task.getAuthor(), task.getTitle(),
-                task.getDescription(), task.getPriority(), task.getStatus(),
-                task.getPerformer());
+        return new TaskDto(task.getId(), task.getAuthor().getId(), task.getAuthor().getEmail()
+                , task.getTitle(), task.getDescription(), task.getPriority(), task.getStatus(),
+                task.getPerformer().getId(), task.getPerformer().getEmail());
     }
 }

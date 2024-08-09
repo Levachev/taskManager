@@ -38,9 +38,9 @@ public class CommentServiceImpl {
 
     public void addComment(CommentDto commentDto){
         Comment comment = Comment.builder()
-                .task(taskRepo.getReferenceById(commentDto.taskId()))
-                .commentator(userRepo.getReferenceById(commentDto.commentatorId()))
-                .comment(commentDto.comment())
+                .task(taskRepo.getReferenceById(commentDto.getTaskId()))
+                .commentator(userRepo.getReferenceById(commentDto.getCommentatorId()))
+                .comment(commentDto.getComment())
                 .build();
 
         commentRepo.save(comment);

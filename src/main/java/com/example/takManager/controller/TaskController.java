@@ -7,6 +7,7 @@ import com.example.takManager.service.TaskServiceImpl;
 import com.example.takManager.spec.filter.TaskFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,14 +58,14 @@ public class TaskController {
 
     @Operation(summary = "create task")
     @PostMapping()
-    public void createTask(@RequestBody InputTaskDto task){
+    public void createTask(@RequestBody @Valid InputTaskDto task){
         taskService.createTask(task);
     }
 
 
     @Operation(summary = "update task by id")
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable Long id, @RequestBody InputTaskDto task){
+    public void updateTask(@PathVariable Long id, @RequestBody @Valid InputTaskDto task){
         taskService.updateTaskById(id, task);
     }
 

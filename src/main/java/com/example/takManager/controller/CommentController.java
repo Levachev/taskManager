@@ -5,6 +5,7 @@ import com.example.takManager.service.CommentServiceImpl;
 import com.example.takManager.spec.filter.CommentFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class CommentController {
 
     @Operation(summary = "add comment to task")
     @PostMapping("/add")
-    public void comment(@RequestBody CommentDto commentDto){
+    public void comment(@RequestBody @Valid CommentDto commentDto){
         commentService.addComment(commentDto);
     }
 

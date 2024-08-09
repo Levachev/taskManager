@@ -1,6 +1,7 @@
 package com.example.takManager.entity;
 
 import com.example.takManager.model.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

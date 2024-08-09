@@ -2,14 +2,11 @@ package com.example.takManager.service;
 
 import com.example.takManager.dto.InputTaskDto;
 import com.example.takManager.dto.TaskDto;
-import com.example.takManager.entity.Comment;
 import com.example.takManager.entity.Task;
 import com.example.takManager.mapper.TaskMapper;
 import com.example.takManager.model.Status;
-import com.example.takManager.repo.CommentRepo;
 import com.example.takManager.repo.TaskRepo;
 import com.example.takManager.repo.UserRepo;
-import com.example.takManager.spec.CommentSpec;
 import com.example.takManager.spec.TaskSpec;
 import com.example.takManager.spec.filter.TaskFilter;
 import lombok.RequiredArgsConstructor;
@@ -47,14 +44,14 @@ public class TaskServiceImpl {
 
     public void createTask(InputTaskDto inputTask) {
         Task task = Task.builder()
-                .author(userRepo.getReferenceById(inputTask.authorId()))
-                .title(inputTask.title())
-                .description(inputTask.description())
-                .status(inputTask.status())
-                .priority(inputTask.priority())
+                .author(userRepo.getReferenceById(inputTask.getAuthorId()))
+                .title(inputTask.getTitle())
+                .description(inputTask.getDescription())
+                .status(inputTask.getStatus())
+                .priority(inputTask.getPriority())
                 .performer(
-                        inputTask.performerId() == null
-                                ? null : userRepo.getReferenceById(inputTask.performerId())
+                        inputTask.getPerformerId() == null
+                                ? null : userRepo.getReferenceById(inputTask.getPerformerId())
                 )
                 .build();
         taskRepo.save(task);
@@ -63,14 +60,14 @@ public class TaskServiceImpl {
     public void updateTaskById(Long id, InputTaskDto inputTask) {
         Task task = Task.builder()
                 .id(id)
-                .author(userRepo.getReferenceById(inputTask.authorId()))
-                .title(inputTask.title())
-                .description(inputTask.description())
-                .status(inputTask.status())
-                .priority(inputTask.priority())
+                .author(userRepo.getReferenceById(inputTask.getAuthorId()))
+                .title(inputTask.getTitle())
+                .description(inputTask.getDescription())
+                .status(inputTask.getStatus())
+                .priority(inputTask.getPriority())
                 .performer(
-                        inputTask.performerId() == null
-                                ? null : userRepo.getReferenceById(inputTask.performerId())
+                        inputTask.getPerformerId() == null
+                                ? null : userRepo.getReferenceById(inputTask.getPerformerId())
                 )
                 .build();
         taskRepo.save(task);
