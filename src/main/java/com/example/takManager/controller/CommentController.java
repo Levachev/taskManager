@@ -46,9 +46,4 @@ public class CommentController {
         return commentService.getByTaskId(page,
                 new CommentFilter(taskId, commentPart, commentatorId));
     }
-
-    @DeleteMapping("/{id}")
-    public void deleteCommentById(@PathVariable(value = "id")@Parameter(description = "task id") Long taskId){
-        commentService.deleteCommentsByTaskId(taskId);
-    }
 }
