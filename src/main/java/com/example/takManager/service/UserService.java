@@ -32,4 +32,9 @@ public class UserService {
     public User save(User user) {
         return userRepo.save(user);
     }
+
+    public Long getId(String email){
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("email not found: "+email));
+        return user.getId();
+    }
 }

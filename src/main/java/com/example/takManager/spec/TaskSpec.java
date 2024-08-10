@@ -7,8 +7,8 @@ import org.springframework.data.jpa.domain.Specification;
 public class TaskSpec {
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
-    private static final String AUTHOR_ID = "author_id";
-    private static final String PERFORMER_ID = "performer_id";
+    private static final String AUTHOR = "author";
+    private static final String PERFORMER = "performer";
     private static final String STATUS = "status";
     private static final String PRIORITY = "priority";
 
@@ -27,11 +27,11 @@ public class TaskSpec {
 
 
     private static Specification<Task> hasAuthorId(Long id) {
-        return (root, query, cb) -> id == null ? cb.conjunction() : cb.equal(root.get(AUTHOR_ID), id);
+        return (root, query, cb) -> id == null ? cb.conjunction() : cb.equal(root.get(AUTHOR).get("id"), id);
     }
 
     private static Specification<Task> hasPerformerId(Long id) {
-        return (root, query, cb) -> id == null ? cb.conjunction() : cb.equal(root.get(PERFORMER_ID), id);
+        return (root, query, cb) -> id == null ? cb.conjunction() : cb.equal(root.get(PERFORMER).get("id"), id);
     }
 
     private static Specification<Task> containsTitle(String titlePart) {

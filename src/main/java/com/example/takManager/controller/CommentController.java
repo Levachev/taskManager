@@ -5,6 +5,8 @@ import com.example.takManager.service.CommentServiceImpl;
 import com.example.takManager.spec.filter.CommentFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,20 +22,33 @@ public class CommentController {
     private final CommentServiceImpl commentService;
 
 
-    @Operation(summary = "add comment to task")
-    @PostMapping("/add")
-    public void comment(@RequestBody @Valid CommentDto commentDto){
-        commentService.addComment(commentDto);
+    @Operation(summary = "add comment to task", responses = {@ApiResponse(
+            responseCode = "200",
+            description = "Id of comment",
+            content = {
+                    @Content(
+                            mediaType = "application/json"
+                    )
+            })
+    })
+    @PostMapping()
+    public Long comment(@RequestBody @Valid CommentDto commentDto){
+        return commentService.addComment(commentDto);
     }
 
 
     @Operation(summary = "get all comments by task id")
-    @GetMapping("/get/task/{id}")
+    @GetMapping("/{id}")
     public List<CommentDto> getCommentsByTask(@RequestParam(required = false, defaultValue = "0")@Parameter(description = "page number") int page,
-                                              @PathVariable@Parameter(description = "task id") Long taskId,
+                                              @PathVariable(value = "id")@Parameter(description = "task id") Long taskId,
                                               @RequestParam(required = false, value = "comment_part")@Parameter(description = "comment part") String commentPart,
                                               @RequestParam(required = false, value = "commentator_id")@Parameter(description = "performer id") Long commentatorId){
         return commentService.getByTaskId(page,
                 new CommentFilter(taskId, commentPart, commentatorId));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCommentById(@PathVariable(value = "id")@Parameter(description = "task id") Long taskId){
+        commentService.deleteCommentsByTaskId(taskId);
     }
 }

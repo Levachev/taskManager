@@ -28,10 +28,10 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                 .role(Role.ROLE_USER)
                 .build();
 
-        userService.createUser(user);
+        var newUser = userService.createUser(user);
 
         var jwt = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(jwt);
+        return new JwtAuthenticationResponse(jwt, newUser.getId());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                 .userDetailsService()
                 .loadUserByUsername(request.getEmail());
 
-        var jwt = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(jwt);
+                var jwt = jwtService.generateToken(user);
+        return new JwtAuthenticationResponse(jwt, userService.getId(request.getEmail()));
     }
 }

@@ -1,7 +1,5 @@
 package com.example.takManager.dto;
 
-import com.example.takManager.model.Priority;
-import com.example.takManager.model.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,10 +29,10 @@ public class TaskDto{
     private String description;
 
     @Schema(description = "priority")
-    private Priority priority;
+    private String priority;
 
     @Schema(description = "status")
-    private Status status;
+    private String status;
 
     @Schema(description = "performer id")
     private Long performerId;

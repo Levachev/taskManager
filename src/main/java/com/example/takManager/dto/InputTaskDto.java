@@ -2,6 +2,7 @@ package com.example.takManager.dto;
 
 import com.example.takManager.model.Priority;
 import com.example.takManager.model.Status;
+import com.example.takManager.valid.EnumValidator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,13 +26,19 @@ public class InputTaskDto{
     @Schema(description = "description")
     private String description;
 
-    @NotBlank(message = "priority cannot be blank")
-    @Schema(description = "priority")
-    private Priority priority;
+    @EnumValidator(
+            enumClazz = Priority.class,
+            message = "This error is coming from the priority enum class"
+    )
+    @Schema(description = "priority: LOW, MEDIUM, HIGH", example = "LOW")
+    private String priority;
 
-    @NotBlank(message = "status cannot be blank")
-    @Schema(description = "status")
-    private Status status;
+    @EnumValidator(
+            enumClazz = Status.class,
+            message = "This error is coming from the status enum class"
+    )
+    @Schema(description = "status: PENDING, IN_PROCESS, COMPLETE", example = "PENDING")
+    private String status;
 
     @Schema(description = "performer id")
     private Long performerId;

@@ -9,6 +9,6 @@ public class CommentMapper {
             return null;
         }
 
-        return new CommentDto(comment.getTask().getId(), comment.getComment(), comment.getCommentator().getId());
+        return new CommentDto(comment.getTask().getId(), comment.getComment());
     }
 }

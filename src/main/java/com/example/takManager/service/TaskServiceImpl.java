@@ -7,6 +7,7 @@ import com.example.takManager.entity.User;
 import com.example.takManager.exception.UnauthorizedAccessException;
 import com.example.takManager.exception.UserNotFoundException;
 import com.example.takManager.mapper.TaskMapper;
+import com.example.takManager.model.Priority;
 import com.example.takManager.model.Status;
 import com.example.takManager.repo.TaskRepo;
 import com.example.takManager.repo.UserRepo;
@@ -49,22 +50,22 @@ public class TaskServiceImpl {
         return TaskMapper.toTaskDto(task);
     }
 
-    public void createTask(InputTaskDto inputTask) {
+    public TaskDto createTask(InputTaskDto inputTask) {
         Task task = Task.builder()
                 .author(getCurrentUser())
                 .title(inputTask.getTitle())
                 .description(inputTask.getDescription())
-                .status(inputTask.getStatus())
-                .priority(inputTask.getPriority())
+                .status(Status.valueOf(inputTask.getStatus()))
+                .priority(Priority.valueOf(inputTask.getPriority()))
                 .performer(
                         inputTask.getPerformerId() == null
                                 ? null : userRepo.getReferenceById(inputTask.getPerformerId())
                 )
                 .build();
-        taskRepo.save(task);
+        return TaskMapper.toTaskDto(taskRepo.save(task));
     }
 
-    public void updateTaskById(Long taskId, InputTaskDto inputTask) {
+    public TaskDto updateTaskById(Long taskId, InputTaskDto inputTask) {
         User currentUser = getCurrentUser();
         Task oldVerTask = taskRepo.getReferenceById(taskId);
         if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())){
@@ -76,14 +77,14 @@ public class TaskServiceImpl {
                 .author(currentUser)
                 .title(inputTask.getTitle())
                 .description(inputTask.getDescription())
-                .status(inputTask.getStatus())
-                .priority(inputTask.getPriority())
+                .status(Status.valueOf(inputTask.getStatus()))
+                .priority(Priority.valueOf(inputTask.getPriority()))
                 .performer(
                         inputTask.getPerformerId() == null
                                 ? null : userRepo.getReferenceById(inputTask.getPerformerId())
                 )
                 .build();
-        taskRepo.save(task);
+        return TaskMapper.toTaskDto(taskRepo.save(task));
     }
 
     public void deleteTaskById(Long taskId) {
@@ -97,7 +98,7 @@ public class TaskServiceImpl {
         taskRepo.deleteById(taskId);
     }
 
-    public void setPerformer(Long taskId, Long performerId)  {
+    public TaskDto setPerformer(Long taskId, Long performerId)  {
         User currentUser = getCurrentUser();
         Task oldVerTask = taskRepo.getReferenceById(taskId);
         if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())){
@@ -105,10 +106,10 @@ public class TaskServiceImpl {
         }
 
         oldVerTask.setPerformer(userRepo.getReferenceById(performerId));
-        taskRepo.save(oldVerTask);
+        return TaskMapper.toTaskDto(taskRepo.save(oldVerTask));
     }
 
-    public void setStatus(Long taskId, String status)  {
+    public TaskDto setStatus(Long taskId, String status)  {
         User currentUser = getCurrentUser();
         Task oldVerTask = taskRepo.getReferenceById(taskId);
         if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())
@@ -117,7 +118,7 @@ public class TaskServiceImpl {
         }
 
         oldVerTask.setStatus(Status.valueOf(status));
-        taskRepo.save(oldVerTask);
+        return TaskMapper.toTaskDto(taskRepo.save(oldVerTask));
     }
 
     private User getCurrentUser() {

@@ -27,7 +27,7 @@ public class TaskController {
 
     @Operation(summary = "get all tasks by author id")
     @GetMapping("/get-all/author/{id}")
-    public List<TaskDto> getAllTasksByAuthorId(@PathVariable@Parameter(description = "author id") Long authorId,
+    public List<TaskDto> getAllTasksByAuthorId(@PathVariable(value = "id")@Parameter(description = "author id") Long authorId,
                @Min(0) @RequestParam(required = false, defaultValue = "0")@Parameter(description = "page number") int page,
                @RequestParam(required = false, value = "title_part")@Parameter(description = "title part") String titlePart,
                @RequestParam(required = false, value = "description_part")@Parameter(description = "description part") String descriptionPart,
@@ -41,7 +41,7 @@ public class TaskController {
 
     @Operation(summary = "get all tasks by performer id")
     @GetMapping("/get-all/performer/{id}")
-    public List<TaskDto> getAllTasksByPerformerId(@PathVariable@Parameter(description = "performer id") Long performerId,
+    public List<TaskDto> getAllTasksByPerformerId(@PathVariable(value = "id")@Parameter(description = "performer id") Long performerId,
               @Min(0) @RequestParam(required = false, defaultValue = "0")@Parameter(description = "page number") int page,
               @RequestParam(required = false, value = "title_part")@Parameter(description = "title part") String titlePart,
               @RequestParam(required = false, value = "description_part")@Parameter(description = "description part") String descriptionPart,
@@ -62,15 +62,15 @@ public class TaskController {
 
     @Operation(summary = "create task")
     @PostMapping()
-    public void createTask(@RequestBody @Valid InputTaskDto task){
-        taskService.createTask(task);
+    public TaskDto createTask(@RequestBody @Valid InputTaskDto task){
+        return taskService.createTask(task);
     }
 
 
     @Operation(summary = "update task by id")
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable@Parameter(description = "task id") Long id, @RequestBody @Valid InputTaskDto task){
-        taskService.updateTaskById(id, task);
+    public TaskDto updateTask(@PathVariable@Parameter(description = "task id") Long id, @RequestBody @Valid InputTaskDto task){
+        return taskService.updateTaskById(id, task);
     }
 
 
@@ -83,16 +83,16 @@ public class TaskController {
 
     @Operation(summary = "update performer of task by task id")
     @PatchMapping("/{id}/performer")
-    public void setPerformer(@PathVariable@Parameter(description = "task id") Long id,
+    public TaskDto setPerformer(@PathVariable@Parameter(description = "task id") Long id,
                              @RequestBody InputPerformerDto performerDto){
-        taskService.setPerformer(id, performerDto.getPerformerId());
+        return taskService.setPerformer(id, performerDto.getPerformerId());
     }
 
 
     @Operation(summary = "update status of task by task id")
     @PatchMapping("/{id}/status")
-    public void setStatus(@PathVariable@Parameter(description = "task id") Long id,
+    public TaskDto setStatus(@PathVariable@Parameter(description = "task id") Long id,
                           @RequestBody StatusDto statusDto){
-        taskService.setStatus(id, statusDto.getStatus());
+        return taskService.setStatus(id, statusDto.getStatus());
     }
 }

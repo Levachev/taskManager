@@ -2,6 +2,8 @@ package com.example.takManager.service;
 
 import com.example.takManager.dto.CommentDto;
 import com.example.takManager.entity.Comment;
+import com.example.takManager.entity.User;
+import com.example.takManager.exception.UserNotFoundException;
 import com.example.takManager.mapper.CommentMapper;
 import com.example.takManager.repo.CommentRepo;
 import com.example.takManager.repo.TaskRepo;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,17 +40,27 @@ public class CommentServiceImpl {
                .collect(Collectors.toList());
     }
 
-    public void addComment(CommentDto commentDto){
+    public Long addComment(CommentDto commentDto){
         Comment comment = Comment.builder()
                 .task(taskRepo.getReferenceById(commentDto.getTaskId()))
-                .commentator(userRepo.getReferenceById(commentDto.getCommentatorId()))
+                .commentator(getCurrentUser())
                 .comment(commentDto.getComment())
                 .build();
 
-        commentRepo.save(comment);
+        return commentRepo.save(comment).getId();
     }
 
     public void deleteCommentsByTaskId(Long taskId){
         commentRepo.deleteByTaskId(taskId);
+    }
+
+    private User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userRepo.findByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new UserNotFoundException(
+                        "cannot find current user in data base, name is - "+userDetails.getUsername()
+                )
+        );
     }
 }

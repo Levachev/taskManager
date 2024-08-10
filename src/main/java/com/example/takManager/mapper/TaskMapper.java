@@ -10,7 +10,7 @@ public class TaskMapper {
         }
 
         return new TaskDto(task.getId(), task.getAuthor().getId(), task.getAuthor().getEmail()
-                , task.getTitle(), task.getDescription(), task.getPriority(), task.getStatus(),
+                , task.getTitle(), task.getDescription(), task.getPriority().name(), task.getStatus().name(),
                 task.getPerformer().getId(), task.getPerformer().getEmail());
     }
 }
