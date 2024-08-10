@@ -3,19 +3,26 @@ package com.example.takManager.service;
 import com.example.takManager.dto.InputTaskDto;
 import com.example.takManager.dto.TaskDto;
 import com.example.takManager.entity.Task;
+import com.example.takManager.entity.User;
+import com.example.takManager.exception.UnauthorizedAccessException;
+import com.example.takManager.exception.UserNotFoundException;
 import com.example.takManager.mapper.TaskMapper;
 import com.example.takManager.model.Status;
 import com.example.takManager.repo.TaskRepo;
 import com.example.takManager.repo.UserRepo;
 import com.example.takManager.spec.TaskSpec;
 import com.example.takManager.spec.filter.TaskFilter;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +51,7 @@ public class TaskServiceImpl {
 
     public void createTask(InputTaskDto inputTask) {
         Task task = Task.builder()
-                .author(userRepo.getReferenceById(inputTask.getAuthorId()))
+                .author(getCurrentUser())
                 .title(inputTask.getTitle())
                 .description(inputTask.getDescription())
                 .status(inputTask.getStatus())
@@ -57,10 +64,16 @@ public class TaskServiceImpl {
         taskRepo.save(task);
     }
 
-    public void updateTaskById(Long id, InputTaskDto inputTask) {
+    public void updateTaskById(Long taskId, InputTaskDto inputTask) {
+        User currentUser = getCurrentUser();
+        Task oldVerTask = taskRepo.getReferenceById(taskId);
+        if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())){
+            throw new UnauthorizedAccessException("only author can update task");
+        }
+
         Task task = Task.builder()
-                .id(id)
-                .author(userRepo.getReferenceById(inputTask.getAuthorId()))
+                .id(taskId)
+                .author(currentUser)
                 .title(inputTask.getTitle())
                 .description(inputTask.getDescription())
                 .status(inputTask.getStatus())
@@ -73,20 +86,47 @@ public class TaskServiceImpl {
         taskRepo.save(task);
     }
 
-    public void deleteTaskById(Long id) {
-        commentService.deleteCommentsByTaskId(id);
-        taskRepo.deleteById(id);
+    public void deleteTaskById(Long taskId) {
+        User currentUser = getCurrentUser();
+        Task oldVerTask = taskRepo.getReferenceById(taskId);
+        if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())){
+            throw new UnauthorizedAccessException("only author can delete task");
+        }
+
+        commentService.deleteCommentsByTaskId(taskId);
+        taskRepo.deleteById(taskId);
     }
 
-    public void setPerformer(Long taskId, Long performerId) {
-        var task = taskRepo.getReferenceById(taskId);
-        task.setPerformer(userRepo.getReferenceById(performerId));
-        taskRepo.save(task);
+    public void setPerformer(Long taskId, Long performerId)  {
+        User currentUser = getCurrentUser();
+        Task oldVerTask = taskRepo.getReferenceById(taskId);
+        if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())){
+            throw new UnauthorizedAccessException("only author can set performer to task");
+        }
+
+        oldVerTask.setPerformer(userRepo.getReferenceById(performerId));
+        taskRepo.save(oldVerTask);
     }
 
-    public void setStatus(Long id, String status) {
-        var task = taskRepo.getReferenceById(id);
-        task.setStatus(Status.valueOf(status));
-        taskRepo.save(task);
+    public void setStatus(Long taskId, String status)  {
+        User currentUser = getCurrentUser();
+        Task oldVerTask = taskRepo.getReferenceById(taskId);
+        if(!Objects.equals(oldVerTask.getAuthor().getId(), currentUser.getId())
+            || !Objects.equals(oldVerTask.getPerformer().getId(), currentUser.getId())){
+            throw new UnauthorizedAccessException("only author and performer change status of task");
+        }
+
+        oldVerTask.setStatus(Status.valueOf(status));
+        taskRepo.save(oldVerTask);
+    }
+
+    private User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userRepo.findByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new UserNotFoundException(
+                        "cannot find current user in data base, name is - "+userDetails.getUsername()
+                )
+        );
     }
 }

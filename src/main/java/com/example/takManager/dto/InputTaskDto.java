@@ -16,9 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Schema(description = "input task format")
 public class InputTaskDto{
-    @NotBlank(message = "author id cannot be blank")
-    @Schema(description = "author id")
-    private Long authorId;
 
     @NotBlank(message = "title cannot be blank")
     @Schema(description = "title")
