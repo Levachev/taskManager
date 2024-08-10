@@ -4,6 +4,7 @@ import com.example.takManager.dto.CommentDto;
 import com.example.takManager.service.CommentServiceImpl;
 import com.example.takManager.spec.filter.CommentFilter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,10 @@ public class CommentController {
 
     @Operation(summary = "get all comments by task id")
     @GetMapping("/get/task/{id}")
-    public List<CommentDto> getCommentsByTask(@RequestParam(required = false, defaultValue = "0") int page,
-                                              @PathVariable Long taskId,
-                                              @RequestParam(required = false, value = "comment_part") String commentPart,
-                                              @RequestParam(required = false, value = "commentator_id") Long commentatorId){
+    public List<CommentDto> getCommentsByTask(@RequestParam(required = false, defaultValue = "0")@Parameter(description = "page number") int page,
+                                              @PathVariable@Parameter(description = "task id") Long taskId,
+                                              @RequestParam(required = false, value = "comment_part")@Parameter(description = "comment part") String commentPart,
+                                              @RequestParam(required = false, value = "commentator_id")@Parameter(description = "performer id") Long commentatorId){
         return commentService.getByTaskId(page,
                 new CommentFilter(taskId, commentPart, commentatorId));
     }

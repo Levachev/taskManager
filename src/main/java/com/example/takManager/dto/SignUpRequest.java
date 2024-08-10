@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Запрос на регистрацию")
+@Schema(description = "Registration Request")
 public class SignUpRequest {
 
-    @Schema(description = "Адрес электронной почты", example = "jondoe@gmail.com")
-    @Size(min = 5, max = 255, message = "Адрес электронной почты должен содержать от 5 до 255 символов")
-    @NotBlank(message = "Адрес электронной почты не может быть пустыми")
-    @Email(message = "Email адрес должен быть в формате user@example.com")
+    @Schema(description = "user email", example = "Jon@gmail.com")
+    @Size(min = 5, max = 255, message = "email must contain from 5 to 255 characters")
+    @NotBlank(message = "Email address cannot be empty")
+    @Email(message = "email must be in email format")
     private String email;
 
     @Schema(description = "Пароль", example = "my_1secret1_password")
-    @Size(max = 255, message = "Длина пароля должна быть не более 255 символов")
+    @Size(max = 255, message = "Password length must be no more than 255 characters")
     private String password;
 }

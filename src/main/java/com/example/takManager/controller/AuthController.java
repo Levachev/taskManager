@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Tag(name = "Аутентификация")
+@Tag(name = "auth")
 public class AuthController {
     private final AuthenticationService authenticationServiceImpl;
 
-    @Operation(summary = "Регистрация пользователя")
+    @Operation(summary = "registration")
     @PostMapping("/sign-up")
     public JwtAuthenticationResponse signUp(@RequestBody @Valid SignUpRequest request) {
         return authenticationServiceImpl.signUp(request);
     }
 
-    @Operation(summary = "Авторизация пользователя")
+    @Operation(summary = "authorization")
     @PostMapping("/sign-in")
     public JwtAuthenticationResponse signIn(@RequestBody @Valid SignInRequest request) {
         return authenticationServiceImpl.signIn(request);
